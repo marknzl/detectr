@@ -110,3 +110,16 @@ def compute_threshold(pixel_array, threshold_value, image_width, image_height) -
             val = 255 if pixel_array[row][col] >= threshold_value else 0
             ret[row][col] = val
     return ret
+
+def compute_dilation_3x3(pixel_array, image_width, image_height) -> list[list[int]]:
+    new_image = create_initialized_greyscale_pixel_array(image_width, image_height)
+    for y in range(0, image_height):
+        for x in range(0, image_width):
+            if pixel_array[y][x]:
+                for dy in [-1, 0, 1]:
+                    for dx in [-1, 0, 1]:
+                        if out_of_bounds(x + dx, y + dy, image_width, image_height):
+                            continue
+                        new_image[y + dy][x + dx] = 1
+                new_image[y][x] = 1
+    return new_image
