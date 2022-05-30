@@ -102,3 +102,11 @@ def compute_standard_deviation_image_5x5(pixel_array, image_width, image_height)
             std_dev = sqrt(variance)
             new_image[y][x] = std_dev
     return new_image
+
+def compute_threshold(pixel_array, threshold_value, image_width, image_height) -> list[list[int]]:
+    ret = create_initialized_greyscale_pixel_array(image_width, image_height)
+    for row in range(0, image_height):
+        for col in range(0, image_width):
+            val = 255 if pixel_array[row][col] >= threshold_value else 0
+            ret[row][col] = val
+    return ret
