@@ -76,6 +76,9 @@ def contrast_stretch(pixel_array, image_width, image_height) -> list[list[int]]:
 
     return ret
 
+def out_of_bounds(x, y, image_width, image_height):
+    return (x < 0) or (x >= image_width) or (y < 0) or (y >= image_height)
+
 def compute_standard_deviation_image_5x5(pixel_array, image_width, image_height) -> list[list[int]]:
     new_image = create_initialized_greyscale_pixel_array(image_width, image_height, 0)
     for y in range(0, image_height):
@@ -84,6 +87,8 @@ def compute_standard_deviation_image_5x5(pixel_array, image_width, image_height)
             temp = []
             for dy in [-2, -1, 0, 1, 2]:
                 for dx in [-2, -1, 0, 1, 2]:
+                    if out_of_bounds(x + dx, y + dy, image_width, image_height):
+                        continue
                     curr_total += pixel_array[y + dy][x + dx]
                     temp.append(pixel_array[y + dy][x + dx])
                     
