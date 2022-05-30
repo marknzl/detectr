@@ -123,3 +123,28 @@ def compute_dilation_3x3(pixel_array, image_width, image_height) -> list[list[in
                         new_image[y + dy][x + dx] = 1
                 new_image[y][x] = 1
     return new_image
+
+def compute_erosion_3x3(pixel_array, image_width, image_height) -> list[list[int]]:
+    new_image = create_initialized_greyscale_pixel_array(image_width, image_height)
+
+    for y in range(0, image_height):
+        for x in range(0, image_width):
+            if not pixel_array[y][x]:
+                continue
+            valid = True
+            for dy in [-1, 0, 1]:
+                if not valid:
+                    break
+
+                for dx in [-1, 0, 1]:
+                    if out_of_bounds(x + dx, y + dy, image_width, image_height):
+                        valid = False
+                        break
+
+                    if not pixel_array[y + dy][x + dx]:
+                        valid = False
+                        break
+            if valid:
+                new_image[y][x] = 1
+
+    return new_image
