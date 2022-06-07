@@ -3,6 +3,7 @@ from matplotlib.patches import Rectangle
 from image_utils import (
     binary_close,
     compute_threshold,
+    get_bounding_box,
     read_rgb_image_to_separate_pixel_arrays,
     compute_rgb_to_greyscale,
     contrast_stretch,
@@ -10,7 +11,6 @@ from image_utils import (
     binary_close,
     compute_connected_component_labeling,
     get_valid_labels,
-    dfs
 )
 
 
@@ -19,7 +19,7 @@ EROSION_ITERATIONS = 3
 THRESHOLD = 140
 
 def main():
-    input_filename = 'numberplate5.png'
+    input_filename = 'numberplate3.png'
     output_filename = input_filename.split('.')[0] + '_output.png'
     image_width, image_height, px_array_r, px_array_g, px_array_b = read_rgb_image_to_separate_pixel_arrays(input_filename)
 
@@ -33,19 +33,7 @@ def main():
     connected_components, labels, initial_pixel_locs = compute_connected_component_labeling(binary_closed_image,
                                                                                             image_width, image_height)
     valid_labels = get_valid_labels(labels, 1000)  # Filter out all labels with frequency < 1000
-
-    min_x = float('infinity')
-    max_x = -1
-    min_y = float('infinity')
-    max_y = -1
-
-    for label in valid_labels:
-        x, y = initial_pixel_locs[label]
-        # Calculate min/max 'x' and min/max 'y' for connected component via DFS
-        mi_x, ma_x, mi_y, ma_y, valid = dfs(connected_components, x, y, label)
-        if valid:
-            min_x, max_x, min_y, max_y = mi_x, ma_x, mi_y, ma_y
-            break
+    min_x, max_x, min_y, max_y = get_bounding_box(connected_components, initial_pixel_locs, valid_labels)
 
     fig1, axs1 = pyplot.subplots(2, 2)
 
