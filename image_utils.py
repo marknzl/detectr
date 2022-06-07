@@ -207,3 +207,49 @@ def compute_connected_component_labeling(pixel_array, image_width, image_height)
                 curr_label += 1
 
     return new_image, mappings, initial_pixel_locs
+
+def get_valid_labels(labels, freq_threshold):
+    valid_labels = []
+    for label, freq in labels.items():
+        if freq >= freq_threshold:
+            valid_labels.append(label)
+    return valid_labels
+
+def dfs(pixel_array, x, y, label):
+    min_x = float('infinity')
+    max_x = -1
+    min_y = float('infinity')
+    max_y = -1
+
+    stack = [(x, y)]
+    visited = set()
+    visited.add((x, y))
+
+    while stack:
+        x1, y1 = stack[-1]
+        min_x = min(x1, min_x)
+        max_x = max(x1, max_x)
+        min_y = min(y1, min_y)
+        max_y = max(y1, max_y)
+        found_neighbour = False
+
+        for dy in [-1, 0, 1]:
+            for dx in [-1, 0, 1]:
+                x_offset = x1 + dx
+                y_offset = y1 + dy
+                if out_of_bounds(x_offset, y_offset, len(pixel_array[0]), len(pixel_array)):
+                    continue
+                neighbour = (x_offset, y_offset)
+                if pixel_array[y_offset][x_offset] == label and neighbour not in visited:
+                    stack.append(neighbour)
+                    visited.add(neighbour)
+                    found_neighbour = True
+                    break
+
+        if not found_neighbour:
+            stack.pop()
+
+    width = max_x - min_x
+    height = max_y - min_y
+    aspect_ratio = width / height
+    return min_x, max_x, min_y, max_y, 1.5 <= aspect_ratio <= 5
