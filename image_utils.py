@@ -148,3 +148,19 @@ def compute_erosion_3x3(pixel_array, image_width, image_height) -> list[list[int
                 new_image[y][x] = 1
 
     return new_image
+
+def binary_close(pixel_array, image_width, image_height, dilation_iterations=1, erosion_iterations=1):
+    dilated_image = None
+    for _ in range(0, dilation_iterations):
+        if dilated_image:
+            dilated_image = compute_dilation_3x3(dilated_image, image_width, image_height)
+        else:
+            dilated_image = compute_dilation_3x3(pixel_array, image_width, image_height)
+    eroded_image = None
+    for _ in range(0, erosion_iterations):
+        if eroded_image:
+            eroded_image = compute_erosion_3x3(eroded_image, image_width, image_height)
+        else:
+            eroded_image = compute_erosion_3x3(dilated_image, image_width, image_height)
+    return eroded_image
+
