@@ -253,3 +253,19 @@ def dfs(pixel_array, x, y, label):
     height = max_y - min_y
     aspect_ratio = width / height
     return min_x, max_x, min_y, max_y, 1.5 <= aspect_ratio <= 5
+
+def get_bounding_box(connected_components, initial_pixel_locs, valid_labels):
+    min_x = float('infinity')
+    max_x = -1
+    min_y = float('infinity')
+    max_y = -1
+
+    for label in valid_labels:
+        x, y = initial_pixel_locs[label]
+        # Calculate min/max 'x' and min/max 'y' for connected component via DFS
+        mi_x, ma_x, mi_y, ma_y, valid = dfs(connected_components, x, y, label)
+        if valid:
+            min_x, max_x, min_y, max_y = mi_x, ma_x, mi_y, ma_y
+            break
+
+    return min_x, max_x, min_y, max_y
