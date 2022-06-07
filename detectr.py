@@ -1,4 +1,5 @@
 from matplotlib import pyplot
+from matplotlib.patches import Rectangle
 from image_utils import (
     binary_close,
     compute_threshold,
@@ -6,7 +7,10 @@ from image_utils import (
     compute_rgb_to_greyscale,
     contrast_stretch,
     compute_standard_deviation_image_5x5,
-    binary_close
+    binary_close,
+    compute_connected_component_labeling,
+    get_valid_labels,
+    dfs
 )
 
 
@@ -16,6 +20,7 @@ THRESHOLD = 140
 
 def main():
     input_filename = 'numberplate5.png'
+    output_filename = input_filename.split('.')[0] + '_output.png'
     image_width, image_height, px_array_r, px_array_g, px_array_b = read_rgb_image_to_separate_pixel_arrays(input_filename)
 
     greyscale_image = compute_rgb_to_greyscale(px_array_r, px_array_g, px_array_b, image_width, image_height)
@@ -24,6 +29,23 @@ def main():
     thresholded_image = compute_threshold(std_dev_image, THRESHOLD, image_width, image_height)
 
     binary_closed_image = binary_close(thresholded_image, image_width, image_height, DILATION_ITERATIONS, EROSION_ITERATIONS)
+
+    connected_components, labels, initial_pixel_locs = compute_connected_component_labeling(binary_closed_image,
+                                                                                            image_width, image_height)
+    valid_labels = get_valid_labels(labels, 1000)  # Filter out all labels with frequency < 1000
+
+    min_x = float('infinity')
+    max_x = -1
+    min_y = float('infinity')
+    max_y = -1
+
+    for label in valid_labels:
+        x, y = initial_pixel_locs[label]
+        # Calculate min/max 'x' and min/max 'y' for connected component via DFS
+        mi_x, ma_x, mi_y, ma_y, valid = dfs(connected_components, x, y, label)
+        if valid:
+            min_x, max_x, min_y, max_y = mi_x, ma_x, mi_y, ma_y
+            break
 
     fig1, axs1 = pyplot.subplots(2, 2)
 
@@ -36,8 +58,18 @@ def main():
     axs1[1, 0].set_title('Binary closed image')
     axs1[1, 0].imshow(binary_closed_image, cmap='gray')
 
-    # axs1[1, 1].set_title('Final image of detection')
-    # axs1[1, 1].imshow(binary_closed_image, cmap='gray')
+    axs1[1, 1].set_title('Final image of detection')
+    axs1[1, 1].imshow(px_array_r, cmap='gray')
+
+    axs1[1, 1].set_title('Final image of detection')
+    axs1[1, 1].imshow(px_array_r, cmap='gray')
+    rect = Rectangle((min_x, min_y), max_x - min_x, max_y - min_y, linewidth=1,
+                     edgecolor='g', facecolor='none')
+    axs1[1, 1].add_patch(rect)
+    extent = axs1[1, 1].get_window_extent().transformed(fig1.dpi_scale_trans.inverted())
+    pyplot.savefig(output_filename, bbox_inches=extent, dpi=600)
+
+
 
     pyplot.show()
 
