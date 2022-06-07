@@ -1,5 +1,6 @@
 from png import Reader
 from math import sqrt
+from collections import deque
 
 def read_rgb_image_to_separate_pixel_arrays(input_filename) -> tuple:
     image_reader = Reader(filename=input_filename)
@@ -164,3 +165,45 @@ def binary_close(pixel_array, image_width, image_height, dilation_iterations=1, 
             eroded_image = compute_erosion_3x3(dilated_image, image_width, image_height)
     return eroded_image
 
+def compute_connected_component_labeling(pixel_array, image_width, image_height):
+    new_image = [[0 for _ in range(0, image_width)] for _ in range(0, image_height)]
+    curr_label = 1
+    mappings = dict()
+    initial_pixel_locs = dict()
+    visited = set()
+
+    offsets = [
+        (-1, 0),
+        (1, 0),
+        (0, -1),
+        (0, 1)
+    ]
+
+    for y in range(0, image_height):
+        for x in range(0, image_width):
+            if pixel_array[y][x] and (x, y) not in visited:
+                queue = deque()
+                queue.append((x, y))
+                initial_pixel_locs[curr_label] = (x, y)
+                visited.add((x, y))
+                mappings[curr_label] = 0
+
+                while len(queue):
+                    x1, y1 = queue.pop()
+                    new_image[y1][x1] = curr_label
+
+                    mappings[curr_label] += 1
+
+                    for dx, dy in offsets:
+                        x_offset = x1 + dx
+                        y_offset = y1 + dy
+                        if out_of_bounds(x_offset, y_offset, image_width, image_height):
+                            continue
+
+                        if pixel_array[y_offset][x_offset] and (x_offset, y_offset) not in visited:
+                            queue.append((x_offset, y_offset))
+                            visited.add((x_offset, y_offset))
+
+                curr_label += 1
+
+    return new_image, mappings, initial_pixel_locs
