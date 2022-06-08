@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>CS373 license plate detector</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous">
+        </script>
+</head>
+
+<body class="bg-dark text-white mt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-7">
+                <h1>License plate detector and reader</h1>
+                <p>To begin, upload your .png below. This has been tested and works with all example images given.
+                    <br><b>NOTE:</b> Running this the first time may take some time, as the OCR package I use downloads
+                    the model on first run.
+                </p>
+
+                <form action="/" method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="file" class="form-label">Upload your file:</label>
+                        <input class="form-control" type="file" id="file" name="file" required>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg btn-block">Submit</button>
+                    </div>
+                </form>
+
+                <hr />
+
+                {% if error_msg %}
+                <p class="text-danger">Error: {{ error_msg }}</p>
+                {% endif %}
+
+                {% if submitted %}
+                <h2>Original image:</h2>
+                <img src="{{ url_for('static', filename=unmodified_filename) }}" width="100%">
+                <hr />
+                {% endif %}
+            </div>
+            {% if submitted %}
+            <div class="col-md-5">
+                <h1 class="text-end">Extracted license plate:</h1>
+                <img class="float-right" src="{{ url_for('static', filename=extracted_filename) }}" width="100%">
+                <hr />
+
+                <h1 class="text-end">Extracted text (via OCR):</h1>
+                <h4 class="text-end">Raw extracted license plate text: <code>{{ raw_plate_text }}</code></h4>
+                <h4 class="text-end">Filtered license plate text: <code>{{ filtered_plate_text }}</code></h4>
+                <h4 class="text-end">Accuracy: <code>{{ accuracy }}%</code></h4>
+                <hr />
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+
+</html>
