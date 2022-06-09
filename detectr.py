@@ -32,8 +32,7 @@ def main():
 
     connected_components, labels, initial_pixel_locs = compute_connected_component_labeling(binary_closed_image,
                                                                                             image_width, image_height)
-    valid_labels = get_valid_labels(labels, 1000)  # Filter out all labels with frequency < 1000
-    min_x, max_x, min_y, max_y = get_bounding_box(connected_components, initial_pixel_locs, valid_labels)
+    min_x, max_x, min_y, max_y = get_bounding_box(connected_components, initial_pixel_locs, labels)
 
     fig1, axs1 = pyplot.subplots(2, 2)
 
