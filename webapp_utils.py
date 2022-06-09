@@ -38,9 +38,9 @@ def get_license_plate(filename):
     im = Image.open(STATIC_PATH / filename)
     im2 = im.crop((min_x, min_y, max_x, max_y))
 
-    extracted_filename = f'{filename.split(".")[0]}_plate.{filename.split(".")[1]}'
-    im2.save(STATIC_PATH / filename)
-    return extracted_filename
+    license_plate_filename = f'{filename.split(".")[0]}_plate.{filename.split(".")[1]}'
+    im2.save(STATIC_PATH / license_plate_filename)
+    return license_plate_filename
 
 
 def read_license_plate_text(filename):
