@@ -208,13 +208,6 @@ def compute_connected_component_labeling(pixel_array, image_width, image_height)
 
     return new_image, mappings, initial_pixel_locs
 
-def get_valid_labels(labels, freq_threshold):
-    valid_labels = []
-    for label, freq in labels.items():
-        if freq >= freq_threshold:
-            valid_labels.append(label)
-    return valid_labels
-
 def dfs(pixel_array, x, y, label):
     min_x = float('infinity')
     max_x = -1
