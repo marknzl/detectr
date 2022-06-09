@@ -1,5 +1,4 @@
 import os
-from tkinter import E
 
 from flask import Flask, render_template, request
 from os import path
