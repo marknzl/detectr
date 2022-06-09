@@ -50,10 +50,11 @@ def read_license_plate_text(filename):
     else:
         reader = easyocr.Reader(['en'])
     res = reader.readtext(str(STATIC_PATH / filename))
+    print(res)
     if not res:
         return '<NO TEXT DETECTED>', -100
-    plate_text = res[0][1]
-    accuracy = round(res[0][2] * 100, 2)
+    plate_text = res[-1][1]
+    accuracy = round(res[-1][2] * 100, 2)
     return plate_text, accuracy
 
 
