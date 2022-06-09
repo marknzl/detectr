@@ -40,19 +40,21 @@ def get_license_plate(filename):
     im2 = im.copy()
     draw = ImageDraw.Draw(im)
     font = None
+    x_offset = None
 
     try:
         font = ImageFont.truetype("consola.ttf", 15, encoding="unic")
+        x_offset = font.getsize(f'({min_x, min_y})')[0]
     except:
         pass
 
-    x_offset = font.getsize(f'({min_x, min_y})')[0]
+    
     draw.rectangle(((min_x, min_y), (max_x, max_y)), outline='green', width=5)
 
     if font:
         draw.text((min_x - x_offset, min_y - 15), f'{(min_x, min_y)}', fill='#FF2D00', font=font)
     else:
-        draw.text((min_x - x_offset, min_y - 15), f'{(min_x, min_y)}', fill='#FF2D00')
+        draw.text((min_x, min_y - 15), f'{(min_x, min_y)}', fill='#FF2D00')
     draw.text((max_x, max_y + 7), f'{(max_x, max_y)}', fill='#FF2D00', font=font)
     im.save(STATIC_PATH / filename)
 
