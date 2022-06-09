@@ -4,6 +4,7 @@ from flask import Flask, render_template, request
 from os import path
 from hashlib import md5
 from webapp_utils import (
+    STATIC_PATH,
     get_license_plate,
     read_license_plate_text,
     filter_text
@@ -15,8 +16,8 @@ app = Flask(__name__)
 
 @app.before_request
 def create_static_folder_if_nonexistent():
-    if not path.exists('static'):
-        os.makedirs('static')
+    if not path.exists(str(STATIC_PATH)):
+        os.makedirs(str(STATIC_PATH))
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -46,10 +47,10 @@ def index():
 
             try:
                 # If same image is already uploaded, we don't process it again.
-                if path.exists(f'static/{hashed_filename}'):
+                if path.exists(STATIC_PATH / hashed_filename):
                     extracted_filename = f'{hashed_filename.split(".")[0]}_plate.{hashed_filename.split(".")[1]}'
                 else:
-                    file.save(f'static/{hashed_filename}')
+                    file.save(STATIC_PATH / hashed_filename)
                     extracted_filename = get_license_plate(hashed_filename)
                 raw_plate_text, accuracy = read_license_plate_text(extracted_filename)
                 filtered_plate_text = filter_text(raw_plate_text)
