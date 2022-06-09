@@ -1,4 +1,5 @@
 import easyocr
+import os
 
 from PIL import Image
 from re import sub
@@ -44,7 +45,10 @@ def get_license_plate(filename):
 
 
 def read_license_plate_text(filename):
-    reader = easyocr.Reader(['en'])
+    if 'hosted' in os.environ:
+        reader = easyocr.Reader(['en'], model_storage_directory='models', download_enabled=False)
+    else:
+        reader = easyocr.Reader(['en'])
     res = reader.readtext(str(STATIC_PATH / filename))
     if not res:
         return '<NO TEXT DETECTED>', -100
