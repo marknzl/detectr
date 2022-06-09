@@ -1,7 +1,7 @@
 import easyocr
 import os
 
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 from re import sub
 from pathlib import Path
 
@@ -37,9 +37,31 @@ def get_license_plate(filename):
     min_x, max_x, min_y, max_y = get_bounding_box(connected_components, initial_pixel_locs, labels)
 
     im = Image.open(STATIC_PATH / filename)
-    im2 = im.crop((min_x, min_y, max_x, max_y))
+    im2 = im.copy()
+    draw = ImageDraw.Draw(im)
+    font = None
+
+    try:
+        font = ImageFont.truetype("consola.ttf", 15, encoding="unic")
+    except:
+        pass
+
+    x_offset = font.getsize(f'({min_x, min_y})')[0]
+    draw.rectangle(((min_x, min_y), (max_x, max_y)), outline='green', width=5)
+
+    if font:
+        draw.text((min_x - x_offset, min_y - 15), f'{(min_x, min_y)}', fill='#FF2D00', font=font)
+    else:
+        draw.text((min_x - x_offset, min_y - 15), f'{(min_x, min_y)}', fill='#FF2D00')
+    draw.text((max_x, max_y + 7), f'{(max_x, max_y)}', fill='#FF2D00', font=font)
+    im.save(STATIC_PATH / filename)
+
+    # Crop license plate using bounding box bounds
+    im2 = im2.crop((min_x, min_y, max_x, max_y))
 
     license_plate_filename = f'{filename.split(".")[0]}_plate.{filename.split(".")[1]}'
+
+    # Save cropped license plate
     im2.save(STATIC_PATH / license_plate_filename)
     return license_plate_filename
 
@@ -50,7 +72,6 @@ def read_license_plate_text(filename):
     else:
         reader = easyocr.Reader(['en'])
     res = reader.readtext(str(STATIC_PATH / filename))
-    print(res)
     if not res:
         return '<NO TEXT DETECTED>', -100
     plate_text = res[-1][1]
