@@ -11,7 +11,6 @@ from image_utils import (
     compute_threshold,
     binary_close,
     compute_connected_component_labeling,
-    get_valid_labels,
     get_bounding_box
 )
 
@@ -30,9 +29,8 @@ def get_license_plate(filename):
 
     connected_components, labels, initial_pixel_locs = compute_connected_component_labeling(binary_closed_image,
                                                                                             image_width, image_height)
-    valid_labels = get_valid_labels(labels, 1000)  # Filter out all labels with frequency < 1000
 
-    min_x, max_x, min_y, max_y = get_bounding_box(connected_components, initial_pixel_locs, valid_labels)
+    min_x, max_x, min_y, max_y = get_bounding_box(connected_components, initial_pixel_locs, labels)
 
     im = Image.open(f'static/{filename}')
     im2 = im.crop((min_x, min_y, max_x, max_y))

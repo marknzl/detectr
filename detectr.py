@@ -10,7 +10,6 @@ from image_utils import (
     compute_standard_deviation_image_5x5,
     binary_close,
     compute_connected_component_labeling,
-    get_valid_labels,
 )
 
 
