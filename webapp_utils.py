@@ -27,8 +27,8 @@ def get_license_plate(filename):
     std_dev_image = contrast_stretch(
         compute_standard_deviation_image_5x5(contrast_stretched_image, image_width, image_height),
         image_width, image_height)
-    thresholded_image = compute_threshold(std_dev_image, 140, image_width, image_height)
-    binary_closed_image = binary_close(thresholded_image, image_width, image_height, 3, 3)
+    thresholded_image = compute_threshold(std_dev_image, 150, image_width, image_height)
+    binary_closed_image = binary_close(thresholded_image, image_width, image_height, 4, 4)
 
     connected_components, labels, initial_pixel_locs = compute_connected_component_labeling(binary_closed_image,
                                                                                             image_width, image_height)

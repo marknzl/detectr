@@ -13,9 +13,9 @@ from image_utils import (
 )
 
 
-DILATION_ITERATIONS = 3
-EROSION_ITERATIONS = 3
-THRESHOLD = 140
+DILATION_ITERATIONS = 4
+EROSION_ITERATIONS = 4
+THRESHOLD = 150
 
 def main():
     input_filename = 'numberplate3.png'
