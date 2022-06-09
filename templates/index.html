@@ -48,14 +48,14 @@
                 {% endif %}
 
                 {% if submitted %}
-                <h2>Original image:</h2>
+                <h2>Detected license plate:</h2>
                 <img src="{{ url_for('static', filename=unmodified_filename) }}" width="100%">
                 <hr />
                 {% endif %}
             </div>
             {% if submitted %}
             <div class="col-md-5">
-                <h2 class="text-end">Detected license plate:</h2>
+                <h2 class="text-end">Extracted license plate:</h2>
                 <img class="float-right" src="{{ url_for('static', filename=license_plate_filename) }}" width="100%">
                 <hr />
 
