@@ -35,18 +35,18 @@ def index():
             if file.filename.split('.')[1] != 'png':
                 error_msg = 'Only PNGs allowed!'
             else:
-                """
-                I compute the MD5 hash of the image here to use as the
-                unique file name. Also, I can use this to check if the same image
-                is uploaded multiple times which allows me to mitigate
-                expensive image processing operations.
-                """
-
-                md5_hash = md5(file.read()).hexdigest()
-                hashed_filename = f'{md5_hash}.{file.filename.split(".")[1]}'
-                file.seek(0)    # need to reset cursor position as we call file.read()
-
                 try:
+                    """
+                    I compute the MD5 hash of the image here to use as the
+                    unique file name. Also, I can use this to check if the same image
+                    is uploaded multiple times which allows me to mitigate
+                    expensive image processing operations.
+                    """
+
+                    md5_hash = md5(file.read()).hexdigest()
+                    hashed_filename = f'{md5_hash}.{file.filename.split(".")[1]}'
+                    file.seek(0)    # need to reset cursor position as we call file.read()
+
                     # If same image is already uploaded, we don't process it again.
                     if path.exists(STATIC_PATH / hashed_filename):
                         license_plate_filename = f'{hashed_filename.split(".")[0]}_plate.{hashed_filename.split(".")[1]}'
