@@ -18,7 +18,7 @@ EROSION_ITERATIONS = 4
 THRESHOLD = 150
 
 def main():
-    input_filename = 'numberplate3.png'
+    input_filename = 'numberplate4.png'
     output_filename = input_filename.split('.')[0] + '_output.png'
     image_width, image_height, px_array_r, px_array_g, px_array_b = read_rgb_image_to_separate_pixel_arrays(input_filename)
 
