@@ -1,5 +1,5 @@
 # detectr
-Simple license plate detection program which uses techniques learned from CS373.
+Simple license plate detection program which uses image processing techniques written from scratch in Python. Techniques based on course content from COMPSCI 373.
 
 ## Intro
 The aim of this project was to utilize image processing techniques such as contrast stretching, thresholding, and various image morphology processes.
